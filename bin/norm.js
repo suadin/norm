@@ -5,6 +5,7 @@
 //   norm docs   --root <dir>         regenerate the runtime file and site docs
 //   norm init   --root <dir>         write a norm.json skeleton
 //   norm eject  --root <dir>         remove the dependency, keep the files
+//   norm smoke  --dir <dir>|--url <u> run the browser gate against the app
 
 import { run } from '../src/cli.js';
 
