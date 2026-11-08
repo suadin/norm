@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test';
 // package may never close.
 
 const here = dirname(fileURLToPath(import.meta.url));
-const fixture = join(here, '..', 'test', 'fixtures', 'eject-app');
+const fixture = join(here, 'fixtures', 'eject-app');
 
 let server;
 

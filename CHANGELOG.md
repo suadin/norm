@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.0 — 2026-11-08
+
+Basic Specs becomes Norm: a package instead of a pinned copy. The runtime (footer,
+reader, tokens, components) ships in `@suadin/norm`, the CLI is `norm`, and an app
+declares itself in `norm.json` and vendors `norm/`. The BASIC-SPECS footer item becomes
+NORM; the runtime version lookup and the 80–200 % zoom clause are gone. See
+`MIGRATIONS.md` for the rule map.
+
 ## 1.2.1 — 2026-10-30
 
 - `.github/actions/setup` replaces the checkout, Python, pnpm and Node steps that every
