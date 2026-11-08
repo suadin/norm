@@ -1,0 +1,33 @@
+{
+  "standard": "2.0.0",
+  "rules": [
+    { "id": "NORM-DOCS-01", "level": "MUST", "profiles": ["core"], "check": "documents" },
+    { "id": "NORM-DOCS-02", "level": "MUST", "profiles": ["core"], "check": "vendor" },
+    { "id": "NORM-READER-01", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-READER-02", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-READER-03", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-READER-04", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-READER-05", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-FOOTER-01", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-FOOTER-02", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-FOOTER-03", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-FOOTER-04", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-VERSION-01", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-VERSION-02", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-LINKS-01", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-LAYOUT-01", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-LAYOUT-02", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-DESIGN-01", "level": "MUST", "profiles": ["web-static", "web-server", "design-only"], "test": "package" },
+    { "id": "NORM-DESIGN-02", "level": "MUST", "profiles": ["web-static", "web-server", "design-only"], "test": "package" },
+    { "id": "NORM-DESIGN-03", "level": "SHOULD", "profiles": ["web-static", "web-server", "design-only"], "check": "review" },
+    { "id": "NORM-DESIGN-04", "level": "MUST", "profiles": ["web-static", "web-server", "design-only"], "test": "package" },
+    { "id": "NORM-DATES-01", "level": "MUST", "profiles": ["web-static", "web-server"], "test": "package" },
+    { "id": "NORM-DATA-01", "level": "MUST", "profiles": ["core"], "check": "secrets" },
+    { "id": "NORM-DATA-02", "level": "MUST", "profiles": ["web-server"], "test": true },
+    { "id": "NORM-TESTS-01", "level": "MUST", "profiles": ["core"], "check": "tests" },
+    { "id": "NORM-TESTS-02", "level": "MUST", "profiles": ["core"], "check": "coverage" },
+    { "id": "NORM-TESTS-03", "level": "MUST", "profiles": ["core"], "check": "rule-tests" },
+    { "id": "NORM-QUALITY-01", "level": "MUST", "profiles": ["quality-typescript", "quality-python"], "check": "commands" },
+    { "id": "NORM-OPT-01", "level": "SHOULD", "profiles": ["core"], "check": "review" }
+  ]
+}

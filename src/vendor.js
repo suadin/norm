@@ -12,7 +12,7 @@ const RUNTIME = join(HERE, 'runtime');
 
 // The module set `norm.js` imports, plus the stylesheet and the logo. No
 // dependency graph needed: the runtime has no external dependencies.
-const FILES = ['norm.js', 'reader.js', 'icons.js', 'metrics.js', 'footer.js', 'norm.css', 'tokens.svg'];
+export const FILES = ['norm.js', 'reader.js', 'icons.js', 'metrics.js', 'footer.js', 'norm.css', 'tokens.svg'];
 
 export function vendor(dir, { version }) {
   const target = join(dir, 'norm');

@@ -1,21 +1,12 @@
 #!/usr/bin/env node
-// The Norm CLI. Grows command by command; for now it vendors the runtime.
-// `norm vendor --dir <dir> --version <v>` writes <dir>/norm/ from the runtime.
+// The Norm CLI. Grows command by command.
+//   norm vendor --dir <dir> --version <v>   write <dir>/norm/ from the runtime
+//   norm check  [--root <dir>]              static conformance
 
-import { readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { check } from '../src/check.js';
 import { vendor } from '../src/vendor.js';
-
-const HERE = dirname(fileURLToPath(import.meta.url));
-
-function readVersion() {
-  try {
-    return JSON.parse(readFileSync(join(HERE, '..', 'package.json'), 'utf8')).version;
-  } catch {
-    return '0.0.0';
-  }
-}
+import { packageVersion } from '../src/config.js';
 
 function flag(argv, name) {
   const index = argv.indexOf(name);
@@ -27,12 +18,17 @@ const [command, ...rest] = process.argv.slice(2);
 async function main() {
   if (command === 'vendor') {
     const dir = flag(rest, '--dir') ?? 'site';
-    const version = flag(rest, '--version') ?? readVersion();
+    const version = flag(rest, '--version') ?? packageVersion();
     const target = vendor(resolve(dir), { version });
-    console.log(`vendored ${version} into ${target}`);
+    console.log(`norm: vendored ${version} into ${target}`);
     return;
   }
-  console.error('norm: unknown or missing command. Try `norm vendor --dir <dir>`.');
+  if (command === 'check') {
+    const root = resolve(flag(rest, '--root') ?? '.');
+    process.exitCode = check(root);
+    return;
+  }
+  console.error('norm: unknown or missing command. Try `norm vendor` or `norm check`.');
   process.exitCode = 1;
 }
 
