@@ -66,3 +66,10 @@ test('[NORM-DESIGN-04] reduced motion disables transitions', async ({ page }) =>
   });
   expect(duration).toEqual('0s');
 });
+
+test('[NORM-FOOTER-03] a missing run says not executed and turns red', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#unit-label')).toHaveText('Unit not executed');
+  await expect(page.locator('#e2e-label')).toHaveText('E2E not executed');
+  await expect(page.locator('#unit-metrics')).toHaveClass(/danger/);
+});
