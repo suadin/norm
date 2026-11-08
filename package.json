@@ -29,7 +29,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test 'test/**/*.test.js'",
     "test:e2e": "playwright test --config e2e/playwright.config.js"
   },
   "devDependencies": {
