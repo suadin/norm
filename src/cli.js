@@ -5,6 +5,7 @@ import { basename, join, resolve } from 'node:path';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { check, runtimePath, runtimeText } from './check.js';
 import { loadConfig, packageVersion } from './config.js';
+import { runMetrics } from './metrics.js';
 import { smoke } from './smoke.js';
 import { vendor } from './vendor.js';
 
@@ -99,6 +100,13 @@ export function commandSmoke(argv) {
   process.exitCode = smoke({ dir: url ? null : dir, url });
 }
 
+export function commandMetrics(argv) {
+  const root = resolve(flag(argv, '--root') ?? '.');
+  const config = loadConfig(root);
+  if (!config) return missing(root);
+  process.exitCode = runMetrics(root, config);
+}
+
 function vendorDir(config) {
   return config.vendorDir ?? 'site';
 }
@@ -125,6 +133,7 @@ export function run(argv) {
   if (command === 'init') return commandInit(rest);
   if (command === 'eject') return commandEject(rest);
   if (command === 'smoke') return commandSmoke(rest);
-  console.error('norm: unknown or missing command. Try `norm vendor`, `norm check`, `norm docs`, `norm init`, `norm eject` or `norm smoke`.');
+  if (command === 'metrics') return commandMetrics(rest);
+  console.error('norm: unknown or missing command. Try `norm vendor`, `norm check`, `norm docs`, `norm init`, `norm eject`, `norm smoke` or `norm metrics`.');
   process.exitCode = 1;
 }
