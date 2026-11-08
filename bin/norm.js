@@ -1,35 +1,11 @@
 #!/usr/bin/env node
-// The Norm CLI. Grows command by command.
-//   norm vendor --dir <dir> --version <v>   write <dir>/norm/ from the runtime
-//   norm check  [--root <dir>]              static conformance
+// The Norm CLI. Thin entry point; the commands live in src/cli.js.
+//   norm vendor --dir <dir>          write <dir>/norm/ from the runtime
+//   norm check  --root <dir>         static conformance
+//   norm docs   --root <dir>         regenerate the runtime file and site docs
+//   norm init   --root <dir>         write a norm.json skeleton
+//   norm eject  --root <dir>         remove the dependency, keep the files
 
-import { resolve } from 'node:path';
-import { check } from '../src/check.js';
-import { vendor } from '../src/vendor.js';
-import { packageVersion } from '../src/config.js';
+import { run } from '../src/cli.js';
 
-function flag(argv, name) {
-  const index = argv.indexOf(name);
-  return index >= 0 && argv[index + 1] !== undefined ? argv[index + 1] : null;
-}
-
-const [command, ...rest] = process.argv.slice(2);
-
-async function main() {
-  if (command === 'vendor') {
-    const dir = flag(rest, '--dir') ?? 'site';
-    const version = flag(rest, '--version') ?? packageVersion();
-    const target = vendor(resolve(dir), { version });
-    console.log(`norm: vendored ${version} into ${target}`);
-    return;
-  }
-  if (command === 'check') {
-    const root = resolve(flag(rest, '--root') ?? '.');
-    process.exitCode = check(root);
-    return;
-  }
-  console.error('norm: unknown or missing command. Try `norm vendor` or `norm check`.');
-  process.exitCode = 1;
-}
-
-main();
+run(process.argv.slice(2));
