@@ -9,7 +9,7 @@ await mountNorm({
   normVersion: '2.0.0',
   docs: [
     { slug: 'readme', title: 'README', file: 'README.md' },
-    { slug: 'specs', title: 'SPECS', file: 'docs/APP-SPECS.md', changelog: 'RELEASE-NOTES.md' },
+    { slug: 'app-specs', title: 'SPECS', file: 'docs/APP-SPECS.md', changelog: 'RELEASE-NOTES.md' },
     { slug: 'norm', title: 'NORM', file: 'norm/NORM.md' },
   ],
 });

@@ -200,6 +200,15 @@ a { color: var(--green); }
 .reader-body table { width: 100%; border-collapse: collapse; }
 .reader-body th, .reader-body td { padding: 0.4rem; border-bottom: 1px solid var(--muted); text-align: left; }
 
+/* NORM-READER-02: the automated test list below the body, separated by the dashed rule. */
+.doc-tests { margin-top: 1.4rem; padding-top: 0.9rem; border-top: 0.125rem dashed var(--muted); }
+.doc-tests h4 { margin: 0 0 0.3rem; }
+.doc-test-group { margin-top: 0.6rem; }
+.doc-test-kind { display: block; color: var(--green); font-size: 0.74em; font-weight: 900; }
+.doc-test-group ol { margin: 0.1rem 0 0; padding-left: 1.4rem; font-size: 0.8em; line-height: 1.5; }
+.doc-test-group li { margin: 0; overflow-wrap: anywhere; }
+.doc-test-group li::marker { color: var(--green); font-weight: 900; }
+
 .tooltip {
   position: fixed;
   z-index: 50;
@@ -215,6 +224,7 @@ a { color: var(--green); }
   pointer-events: none;
 }
 .tooltip[data-wide] { max-width: 36rem; }
+.tooltip[data-below]::after { bottom: auto; top: -0.3rem; }
 .tooltip::after {
   content: "";
   position: absolute;

@@ -68,5 +68,5 @@ test('[NORM-FOOTER-01] the footer has six items in order with no icon repeat', (
   assert.ok(html.includes('id="unit-metrics"'));
   assert.ok(html.includes('id="e2e-metrics"'));
   assert.match(html, /README.*SPECS.*NORM.*source.*Unit.*E2E/s);
-  assert.equal(sourceLabel('https://github.com/suadin/taler'), 'github.com/suadin/taler');
+  assert.equal(sourceLabel('https://github.com/suadin/taler'), 'suadin/taler');
 });

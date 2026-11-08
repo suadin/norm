@@ -28,7 +28,7 @@ function baseName(file) {
 
 const DEFAULT_DOCS = [
   { slug: 'readme', title: 'README', file: 'docs/README.md' },
-  { slug: 'specs', title: 'SPECS', file: 'docs/APP-SPECS.md', changelog: 'docs/RELEASE-NOTES.md' },
+  { slug: 'app-specs', title: 'SPECS', file: 'docs/APP-SPECS.md', changelog: 'docs/RELEASE-NOTES.md' },
   { slug: 'norm', title: 'NORM', file: 'norm/NORM.md' },
 ];
 
@@ -86,6 +86,7 @@ export async function mountNorm(options = {}) {
   };
 
   const state = { docs: [], byslug: {}, current: null };
+  let metricsData = {};
 
   // Which document a `.md` link points at, by basename: `CSV.md` -> `csv`.
   const docByFile = {};
@@ -142,7 +143,51 @@ export async function mountNorm(options = {}) {
     }
     elements.sectionTitle.textContent = active.title;
     elements.body.innerHTML = renderMarkdown(active.markdown);
+    if (current.slug === 'app-specs' || current.slug === 'norm') {
+      renderRequirementTests(active.slug);
+    }
     doc.title = `${current.title} — ${app.name}`;
+  }
+
+  // NORM-READER-02: the automated test list stays inside the documentation
+  // card, below the body. The metrics file carries `requirements`, a map from
+  // section slug to the unit and e2e names that protect the rules there.
+  function readableTestName(name) {
+    return String(name).startsWith('test_') ? String(name).slice(5).replace(/_/g, ' ') : name;
+  }
+
+  function renderRequirementTests(slug) {
+    const groups = metricsData?.requirements?.[slug];
+    if (!groups) return;
+    const box = doc.createElement('section');
+    box.className = 'doc-tests';
+    const heading = doc.createElement('h4');
+    heading.textContent = 'Automated tests';
+    box.append(heading);
+    const unit = groups.unit ?? [];
+    const e2e = groups.e2e ?? [];
+    if (!unit.length && !e2e.length) {
+      const empty = doc.createElement('p');
+      empty.textContent = 'No automated test names this requirement yet.';
+      box.append(empty);
+    }
+    for (const [label, names] of [['Unit', unit], ['E2E', e2e]]) {
+      if (!names.length) continue;
+      const group = doc.createElement('div');
+      group.className = 'doc-test-group';
+      const kind = doc.createElement('span');
+      kind.className = 'doc-test-kind';
+      kind.textContent = `${label} · ${names.length}`;
+      const list = doc.createElement('ol');
+      for (const name of names) {
+        const item = doc.createElement('li');
+        item.textContent = label === 'Unit' ? readableTestName(name) : name;
+        list.append(item);
+      }
+      group.append(kind, list);
+      box.append(group);
+    }
+    elements.body.append(box);
   }
 
   function open(slug, section = null) {
@@ -185,9 +230,15 @@ export async function mountNorm(options = {}) {
     elements.tooltip.toggleAttribute('data-wide', target.hasAttribute('data-tip-wide'));
     const box = target.getBoundingClientRect();
     const width = elements.tooltip.offsetWidth;
+    const height = elements.tooltip.offsetHeight;
     const left = Math.min(Math.max(8, box.left + box.width / 2 - width / 2), win.innerWidth - width - 8);
+    // Above the target normally; a header button is too close to the top, and a
+    // tooltip clamped to the edge would cover the very thing it describes.
+    const above = box.top - height - 10;
+    const below = above < 8;
     elements.tooltip.style.left = `${left}px`;
-    elements.tooltip.style.top = `${Math.max(8, box.top - elements.tooltip.offsetHeight - 10)}px`;
+    elements.tooltip.style.top = `${below ? box.bottom + 10 : above}px`;
+    elements.tooltip.toggleAttribute('data-below', below);
     elements.tooltip.style.setProperty('--arrow', `${box.left + box.width / 2 - left}px`);
   }
 
@@ -211,9 +262,11 @@ export async function mountNorm(options = {}) {
     if (el) el.addEventListener('click', handler);
   };
   click('#readme', () => { win.location.hash = docsHash('readme'); });
-  click('#specs', () => { win.location.hash = docsHash('specs'); });
+  click('#specs', () => { win.location.hash = docsHash('app-specs'); });
   click('#norm', () => { win.location.hash = docsHash('norm'); });
-  click('#reader-close', () => { win.location.hash = homeHash; });
+  click('#reader-close', () => {
+    win.location.hash = typeof homeHash === 'function' ? homeHash() : homeHash;
+  });
   click('#theme', () => {
     doc.documentElement.style.colorScheme = doc.documentElement.style.colorScheme === 'dark' ? 'light' : 'dark';
   });
@@ -230,7 +283,8 @@ export async function mountNorm(options = {}) {
   }
 
   state.docs = await loadDocs();
-  fillFooter(root, { app, normVersion, metrics: await loadMetrics(options.metrics) });
+  metricsData = await loadMetrics(options.metrics);
+  fillFooter(root, { app, normVersion, metrics: metricsData });
   if (route) route();
 
   return {
