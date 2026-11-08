@@ -4,6 +4,10 @@
   "description": "The reusable base for a small web app whose primary reader is a future AI session: design tokens, footer, documentation reader and conformance checks.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suadin/norm.git"
+  },
   "bin": {
     "norm": "bin/norm.js"
   },
