@@ -1,0 +1,38 @@
+{
+  "name": "@suadin/norm",
+  "version": "2.0.0",
+  "description": "The reusable base for a small web app whose primary reader is a future AI session: design tokens, footer, documentation reader and conformance checks.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "norm": "bin/norm.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "NORM.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": "./src/runtime/norm.js",
+    "./norm.css": "./src/runtime/norm.css",
+    "./reader": "./src/runtime/reader.js",
+    "./footer": "./src/runtime/footer.js",
+    "./metrics": "./src/runtime/metrics.js",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "test:e2e": "playwright test --config e2e/playwright.config.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}
