@@ -119,6 +119,8 @@ export async function mountNorm(options = {}) {
       button.type = 'button';
       button.className = `reader-tab${item.slug === current.slug ? ' active' : ''}`;
       button.textContent = item.title;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-selected', String(item.slug === current.slug));
       button.addEventListener('click', () => open(item.slug));
       elements.tabs.append(button);
     }
