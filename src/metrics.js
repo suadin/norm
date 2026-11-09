@@ -26,7 +26,11 @@ export function runMetrics(root, config) {
   for (const file of unitConfig.include ?? []) unitArgs.push(`--test-coverage-include=${file}`);
   unitArgs.push(...(unitConfig.testFiles ?? ['test/*.test.js']));
 
-  const unit = spawnSync(process.execPath, unitArgs, { cwd: root, encoding: 'utf8' });
+  // A custom command wins over the default node invocation: a TypeScript app
+  // needs --experimental-strip-types and its own loader, a JS app does not.
+  const unit = unitConfig.command
+    ? spawnSync(unitConfig.command, { cwd: root, shell: true, encoding: 'utf8' })
+    : spawnSync(process.execPath, unitArgs, { cwd: root, encoding: 'utf8' });
   process.stdout.write(unit.stdout ?? '');
   process.stderr.write(unit.stderr ?? '');
   const unitText = `${unit.stdout ?? ''}\n${unit.stderr ?? ''}`;
@@ -38,10 +42,10 @@ export function runMetrics(root, config) {
   rmSync(join(root, 'e2e-results.json'), { force: true });
   rmSync(join(root, 'test-results'), { recursive: true, force: true });
 
-  const e2e = spawnSync('pnpm', ['exec', 'playwright', 'test', '--config', 'e2e/playwright.config.js'], {
-    cwd: root,
-    stdio: 'inherit',
-  });
+  const e2e = spawnSync(
+    e2eConfig.command ?? 'pnpm exec playwright test --config e2e/playwright.config.js',
+    { cwd: root, stdio: 'inherit', shell: true },
+  );
   let e2eResult = null;
   if (existsSync(join(root, 'e2e-results.json'))) {
     e2eResult = JSON.parse(readFileSync(join(root, 'e2e-results.json'), 'utf8'));
@@ -78,6 +82,9 @@ export function runMetrics(root, config) {
   console.log(`e2e: ${metrics.e2e?.tests ?? 'not executed'} tests, coverage ${metrics.e2e?.coverage ?? 'not measured'} %`);
 
   const unitMissing = (metrics.unit?.tests ?? 0) > 0 && metrics.unit?.coverage == null;
-  const e2eMissing = (metrics.e2e?.tests ?? 0) > 0 && metrics.e2e?.coverage == null;
+  // A bundled app (Angular) cannot name its browser files: with no files
+  // declared, "coverage not measured" is honest, not a defect.
+  const e2eMissing =
+    (e2eConfig.files?.length ?? 0) > 0 && (metrics.e2e?.tests ?? 0) > 0 && metrics.e2e?.coverage == null;
   return unit.status !== 0 || e2e.status !== 0 || unitMissing || e2eMissing ? 1 : 0;
 }

@@ -194,11 +194,14 @@ export function checkMetrics(root, config, errors) {
     errors.push(`metrics file is not valid JSON: ${exc.message}`);
     return;
   }
-  for (const suite of ['unit', 'e2e']) {
-    const item = metrics[suite];
-    if (item && typeof item === 'object') {
-      const total = item.tests ?? item.total ?? 0;
-      if (total && item.coverage == null) errors.push(`${suite} has tests but no line coverage`);
+  const coverageAllowed = new Set((config.allow ?? []).map((item) => item.rule)).has('NORM-TESTS-02');
+  if (!coverageAllowed) {
+    for (const suite of ['unit', 'e2e']) {
+      const item = metrics[suite];
+      if (item && typeof item === 'object') {
+        const total = item.tests ?? item.total ?? 0;
+        if (total && item.coverage == null) errors.push(`${suite} has tests but no line coverage`);
+      }
     }
   }
   if (!metrics.unit) errors.push('metrics has no unit result');
